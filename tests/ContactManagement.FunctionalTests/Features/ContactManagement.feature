@@ -13,3 +13,9 @@ Feature: Contact Management
     When I create a contact
     Then the contact should be created successfully
     And the response should contain the contact details
+
+  @create_contact @negative
+  Scenario: Fail to create contact without name
+    Given I do not provide a contact name
+    When I attempt to create a contact
+    Then the system should return a validation error
