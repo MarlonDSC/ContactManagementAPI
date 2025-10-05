@@ -9,13 +9,19 @@ namespace ContactManagement.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Contact> builder)
         {
             builder.HasKey(c => c.Id);
-            
+
             builder.Property(c => c.CreatedAt)
                 .IsRequired();
-            
+
             builder.Property(c => c.UpdatedAt)
                 .IsRequired();
-            
+
+            builder.Property(c => c.IsDeleted)
+                .IsRequired();
+
+            builder.Property(c => c.DeletedAt)
+                .IsRequired(false);
+
             // Configure Name value object
             builder.OwnsOne(c => c.Name, nameBuilder =>
             {
@@ -24,7 +30,7 @@ namespace ContactManagement.Infrastructure.Data.Configurations
                     .IsRequired()
                     .HasMaxLength(100);
             });
-            
+
             // Configure Email value object
             builder.OwnsOne(c => c.Email, emailBuilder =>
             {
@@ -32,7 +38,7 @@ namespace ContactManagement.Infrastructure.Data.Configurations
                     .HasColumnName("Email")
                     .HasMaxLength(256);
             });
-            
+
             // Configure PhoneNumber value object
             builder.OwnsOne(c => c.PhoneNumber, phoneBuilder =>
             {
