@@ -1,0 +1,28 @@
+name: 🧪 Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 🔧 Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: 📦 Install dependencies
+        run: dotnet restore
+
+      - name: 🔨 Build the solution
+        run: dotnet build
+
+      - name: 🧪 Run unit tests
+        run: dotnet test tests/ContactManagement.UnitTests/ContactManagement.UnitTests.csproj
+
+      - name: 🧪 Run functional tests
+        run: dotnet test tests/ContactManagement.FunctionalTests/ContactManagement.FunctionalTests.csproj
