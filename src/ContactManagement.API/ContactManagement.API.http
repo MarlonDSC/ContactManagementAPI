@@ -1,0 +1,12 @@
+@ContactManagement.API_HostAddress = http://localhost:7000
+
+GET {{ContactManagement.API_HostAddress}}/api/contacts
+Accept: application/json
+Content-Type: application/json
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phoneNumber": "1234567890"
+}
+
+###
