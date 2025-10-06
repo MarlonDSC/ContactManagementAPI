@@ -13,8 +13,8 @@ namespace ContactManagement.Domain.Entities
         // public ICollection<FundContact> FundContacts { get; private set; }
 
         public static Result<Contact> Create(
-            string name, 
-            string? email = null, 
+            string name,
+            string? email = null,
             string? phoneNumber = null)
         {
             var nameResult = Name.Create(name);
@@ -46,14 +46,31 @@ namespace ContactManagement.Domain.Entities
         }
 
         public Result<Contact> Update(
-            Name name,
-            Email? email = null,
-            PhoneNumber? phoneNumber = null)
+            string name,
+            string? email = null,
+            string? phoneNumber = null)
         {
-            Name = name;
-            Email = email;
-            PhoneNumber = phoneNumber;
-            UpdateTimestamps();
+            var nameResult = Name.Create(name);
+            if (nameResult.IsFailure)
+            {
+                return Result<Contact>.FromResult(nameResult);
+            }
+
+            var emailResult = Email.Create(email);
+            if (emailResult.IsFailure)
+            {
+                return Result<Contact>.FromResult(emailResult);
+            }
+
+            var phoneNumberResult = PhoneNumber.Create(phoneNumber);
+            if (phoneNumberResult.IsFailure)
+            {
+                return Result<Contact>.FromResult(phoneNumberResult);
+            }
+
+            Name = nameResult.Value!;
+            Email = emailResult.Value!;
+            PhoneNumber = phoneNumberResult.Value!;
 
             return Result<Contact>.Success(this);
         }
