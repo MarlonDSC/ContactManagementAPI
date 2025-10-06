@@ -1,5 +1,4 @@
 using ContactManagement.Domain.Entities;
-using ContactManagement.Domain.ValueObjects;
 
 namespace ContactManagement.UnitTests.Domain.Entities
 {
@@ -77,18 +76,15 @@ namespace ContactManagement.UnitTests.Domain.Entities
         {
             // Arrange
             var contact = Contact.Create(_validName).Value;
-            var newName = Name.Create("Jane Doe").Value;
-            var newEmail = Email.Create("jane@example.com").Value;
-            var newPhoneNumber = PhoneNumber.Create("9876543210").Value;
 
             // Act
-            var result = contact!.Update(newName!, newEmail!, newPhoneNumber!);
+            var result = contact!.Update("Jane Doe", "jane@example.com", "9876543210");
 
             // Assert
             Assert.True(result.IsSuccess);
-            Assert.Equal(newName, result.Value!.Name);
-            Assert.Equal(newEmail, result.Value!.Email);
-            Assert.Equal(newPhoneNumber, result.Value!.PhoneNumber);
+            Assert.Equal("Jane Doe", result.Value!.Name.Value);
+            Assert.Equal("jane@example.com", result.Value.Email!.Value);
+            Assert.Equal("9876543210", result.Value.PhoneNumber!.Value);
         }
 
         [Fact]
@@ -96,14 +92,13 @@ namespace ContactManagement.UnitTests.Domain.Entities
         {
             // Arrange
             var contact = Contact.Create(_validName, _validEmail, _validPhoneNumber).Value!;
-            var newName = Name.Create("Jane Doe").Value!;
 
             // Act
-            var result = contact.Update(newName);
+            var result = contact.Update("Jane Doe");
 
             // Assert
             Assert.True(result.IsSuccess);
-            Assert.Equal(newName, result.Value!.Name);
+            Assert.Equal("Jane Doe", result.Value!.Name.Value);
             Assert.Null(result.Value.Email);
             Assert.Null(result.Value.PhoneNumber);
         }

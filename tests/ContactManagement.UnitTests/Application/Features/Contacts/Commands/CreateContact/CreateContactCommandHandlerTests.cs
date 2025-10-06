@@ -2,7 +2,6 @@ using ContactManagement.Application.Features.Contacts.Commands.CreateContact;
 using ContactManagement.Domain.Entities;
 using ContactManagement.Domain.Errors;
 using ContactManagement.Domain.Interfaces;
-using ContactManagement.Domain.ValueObjects;
 using ContactManagement.Shared.Common;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -27,8 +26,6 @@ namespace ContactManagement.UnitTests.Application.Features.Contacts.Commands.Cre
         {
             // Arrange
             var command = new CreateContactCommand("John Doe", "john@example.com", "1234567890");
-
-            // Create a contact and let it generate its own ID
             var contact = Contact.Create(
                 "John Doe",
                 "john@example.com",
@@ -136,8 +133,6 @@ namespace ContactManagement.UnitTests.Application.Features.Contacts.Commands.Cre
         {
             // Arrange
             var command = new CreateContactCommand("John Doe", null, "1234567890");
-
-            // Create a contact and let it generate its own ID
             var contact = Contact.Create(
                 "John Doe",
                 null,
@@ -164,8 +159,6 @@ namespace ContactManagement.UnitTests.Application.Features.Contacts.Commands.Cre
         {
             // Arrange
             var command = new CreateContactCommand("John Doe", "john@example.com", null);
-
-            // Create a contact and let it generate its own ID
             var contact = Contact.Create(
                 "John Doe",
                 "john@example.com",

@@ -1,5 +1,4 @@
 using ContactManagement.Domain.Entities;
-using ContactManagement.Domain.ValueObjects;
 using ContactManagement.Infrastructure.Data;
 using ContactManagement.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -110,9 +109,7 @@ namespace ContactManagement.UnitTests.Infrastructure.Repositories
             await dbContext.Set<Contact>().AddAsync(contact);
             await dbContext.SaveChangesAsync();
 
-            var newName = Name.Create("Updated Contact").Value!;
-            var newEmail = Email.Create("updated@example.com").Value!;
-            contact.Update(newName, newEmail);
+            contact.Update("Updated Contact", "updated@example.com");
 
             // Act
             var result = await repository.UpdateAsync(contact);
