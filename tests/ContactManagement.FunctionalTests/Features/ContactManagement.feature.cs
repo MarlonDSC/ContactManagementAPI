@@ -117,7 +117,7 @@ namespace ContactManagement.FunctionalTests.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/ContactManagement.feature.ndjson", 4);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/ContactManagement.feature.ndjson", 6);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -224,6 +224,91 @@ namespace ContactManagement.FunctionalTests.Features
     await testRunner.WhenAsync("I attempt to create a contact", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 21
+    await testRunner.ThenAsync("the system should return a validation error", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Update contact information")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Contact Management")]
+        [global::Xunit.TraitAttribute("Description", "Update contact information")]
+        [global::Xunit.TraitAttribute("Category", "update_contact")]
+        [global::Xunit.TraitAttribute("Category", "positive")]
+        public async global::System.Threading.Tasks.Task UpdateContactInformation()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "update_contact",
+                    "positive"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Update contact information", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 24
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 25
+    await testRunner.GivenAsync("an existing contact", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 26
+    await testRunner.WhenAsync("I update the contact\'s email", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 27
+    await testRunner.ThenAsync("the contact should be updated successfully", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 28
+    await testRunner.AndAsync("the response should reflect the changes", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Update contact information with invalid email")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Contact Management")]
+        [global::Xunit.TraitAttribute("Description", "Update contact information with invalid email")]
+        [global::Xunit.TraitAttribute("Category", "update_contact")]
+        [global::Xunit.TraitAttribute("Category", "negative")]
+        public async global::System.Threading.Tasks.Task UpdateContactInformationWithInvalidEmail()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "update_contact",
+                    "negative"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Update contact information with invalid email", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 31
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 32
+    await testRunner.GivenAsync("an existing contact", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 33
+    await testRunner.WhenAsync("I update the contact\'s email with an invalid email", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 34
     await testRunner.ThenAsync("the system should return a validation error", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }

@@ -19,3 +19,16 @@ Feature: Contact Management
     Given I do not provide a contact name
     When I attempt to create a contact
     Then the system should return a validation error
+
+  @update_contact @positive
+  Scenario: Update contact information
+    Given an existing contact
+    When I update the contact's email
+    Then the contact should be updated successfully
+    And the response should reflect the changes
+
+  @update_contact @negative
+  Scenario: Update contact information with invalid email
+    Given an existing contact
+    When I update the contact's email with an invalid email
+    Then the system should return a validation error
