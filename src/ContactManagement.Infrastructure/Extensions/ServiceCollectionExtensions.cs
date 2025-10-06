@@ -19,6 +19,7 @@ namespace ContactManagement.Infrastructure.Extensions
 
             // Register repositories
             services.AddScoped<IContactRepository, ContactRepository>();
+            services.AddScoped<IFundRepository, FundRepository>();
 
             return services;
         }

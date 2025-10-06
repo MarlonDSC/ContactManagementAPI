@@ -60,6 +60,20 @@ namespace ContactManagement.Domain.Errors
         public static class Fund
         {
             public static Error NotFound => General.NotFound("Fund");
+            
+            public static readonly Error NameRequired = new(
+                "Fund.NameRequired",
+                "The fund name is required.");
+                
+            public static readonly Error NameTooLong = new(
+                "Fund.NameTooLong",
+                "The fund name exceeds the maximum allowed length.");
+                
+            public static readonly Error CannotDelete = new(
+                "Fund.CannotDelete",
+                "The fund cannot be deleted because it has associated contacts.");
+                
+            public static Error AlreadyExists => General.Conflict("Fund");
         }
 
         public static class FundContact

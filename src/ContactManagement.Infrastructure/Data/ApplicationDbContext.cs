@@ -6,6 +6,7 @@ namespace ContactManagement.Infrastructure.Data
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
         public DbSet<Contact> Contacts { get; set; } = null!;
+        public DbSet<Fund> Funds { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
