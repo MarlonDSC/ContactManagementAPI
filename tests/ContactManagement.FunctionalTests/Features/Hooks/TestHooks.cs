@@ -36,11 +36,34 @@ namespace ContactManagement.FunctionalTests.Features.Hooks
                 // Ensure database is created
                 dbContext.Database.EnsureCreated();
                 
+                // Clean the database before each test to ensure a clean state
+                CleanDatabase(dbContext);
+                
                 // Use the DatabaseSeeder to seed test data if needed
                 // DatabaseSeeder.SeedAllTestData(scope.ServiceProvider);
                 
-                Console.WriteLine("Database seeded with test data");
+                Console.WriteLine("Database prepared for test");
             }
+        }
+        
+        private void CleanDatabase(ApplicationDbContext dbContext)
+        {
+            // Remove all funds
+            if (dbContext.Funds.Any())
+            {
+                dbContext.Funds.RemoveRange(dbContext.Funds);
+            }
+            
+            // Remove all contacts
+            if (dbContext.Contacts.Any())
+            {
+                dbContext.Contacts.RemoveRange(dbContext.Contacts);
+            }
+            
+            // Save changes
+            dbContext.SaveChanges();
+            
+            Console.WriteLine("Database cleaned for test");
         }
 
         [AfterScenario]
@@ -63,6 +86,13 @@ namespace ContactManagement.FunctionalTests.Features.Hooks
         public static void BeforeFundContactAssignmentFeature(FeatureContext featureContext)
         {
             // Setup specific to the FundContactAssignment feature
+            Console.WriteLine($"Setting up for feature: {featureContext.FeatureInfo.Title}");
+        }
+        
+        [BeforeFeature("Fund Management")]
+        public static void BeforeFundManagementFeature(FeatureContext featureContext)
+        {
+            // Setup specific to the FundManagement feature
             Console.WriteLine($"Setting up for feature: {featureContext.FeatureInfo.Title}");
         }
 

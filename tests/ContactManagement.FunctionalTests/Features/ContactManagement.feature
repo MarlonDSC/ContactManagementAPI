@@ -32,3 +32,15 @@ Feature: Contact Management
     Given an existing contact
     When I update the contact's email with an invalid email
     Then the system should return a validation error
+
+  @delete_contact @positive
+  Scenario: Delete an unassigned contact
+    Given a contact not assigned to any fund
+    When I delete the contact
+    Then the contact should be removed successfully
+
+  @delete_contact @negative
+  Scenario: Fail to delete assigned contact
+    Given a contact assigned to a fund
+    When I attempt to delete the contact
+    Then the system should return a validation error

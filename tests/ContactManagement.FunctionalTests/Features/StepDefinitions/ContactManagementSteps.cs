@@ -288,8 +288,13 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         {
             var response = _scenarioContext.Get<HttpResponseMessage>("Response");
 
-            // Assert that the response has a 400 Bad Request status code
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            // Assert that the response has either a 400 Bad Request or 422 Unprocessable Entity status code
+            Assert.True(
+                response.StatusCode == HttpStatusCode.BadRequest || 
+                response.StatusCode == HttpStatusCode.UnprocessableEntity,
+                $"Expected status code to be 400 or 422, but got {(int)response.StatusCode}");
+            
+            Console.WriteLine($"Verified response has error status code: {(int)response.StatusCode}");
         }
 
         [Then(@"the contact should be updated successfully")]

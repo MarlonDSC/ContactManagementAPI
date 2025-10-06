@@ -117,7 +117,7 @@ namespace ContactManagement.FunctionalTests.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/ContactManagement.feature.ndjson", 6);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/ContactManagement.feature.ndjson", 8);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -309,6 +309,88 @@ namespace ContactManagement.FunctionalTests.Features
     await testRunner.WhenAsync("I update the contact\'s email with an invalid email", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 34
+    await testRunner.ThenAsync("the system should return a validation error", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Delete an unassigned contact")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Contact Management")]
+        [global::Xunit.TraitAttribute("Description", "Delete an unassigned contact")]
+        [global::Xunit.TraitAttribute("Category", "delete_contact")]
+        [global::Xunit.TraitAttribute("Category", "positive")]
+        public async global::System.Threading.Tasks.Task DeleteAnUnassignedContact()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "delete_contact",
+                    "positive"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "4";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Delete an unassigned contact", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 37
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 38
+    await testRunner.GivenAsync("a contact not assigned to any fund", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 39
+    await testRunner.WhenAsync("I delete the contact", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 40
+    await testRunner.ThenAsync("the contact should be removed successfully", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Fail to delete assigned contact")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Contact Management")]
+        [global::Xunit.TraitAttribute("Description", "Fail to delete assigned contact")]
+        [global::Xunit.TraitAttribute("Category", "delete_contact")]
+        [global::Xunit.TraitAttribute("Category", "negative")]
+        public async global::System.Threading.Tasks.Task FailToDeleteAssignedContact()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "delete_contact",
+                    "negative"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "5";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Fail to delete assigned contact", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 43
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 44
+    await testRunner.GivenAsync("a contact assigned to a fund", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 45
+    await testRunner.WhenAsync("I attempt to delete the contact", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 46
     await testRunner.ThenAsync("the system should return a validation error", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
