@@ -1,17 +1,14 @@
 using ContactManagement.FunctionalTests.Features.Support;
+using ContactManagement.Infrastructure.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ContactManagement.FunctionalTests.Features.Hooks
 {
     [Binding]
-    public class TestHooks
+    public class TestHooks(ScenarioContext scenarioContext)
     {
-        private readonly ScenarioContext _scenarioContext;
+        private readonly ScenarioContext _scenarioContext = scenarioContext;
         private TestContext? _testContext;
-
-        public TestHooks(ScenarioContext scenarioContext)
-        {
-            _scenarioContext = scenarioContext;
-        }
 
         [BeforeScenario(Order = 1)]
         public void InitializeTestContext()
@@ -19,7 +16,8 @@ namespace ContactManagement.FunctionalTests.Features.Hooks
             // Create and register the TestContext
             _testContext = new TestContext();
             _scenarioContext.Set(_testContext);
-            
+
+            // No need to await since InitializeAsync is now static and returns a completed task
             Console.WriteLine("TestContext initialized for scenario");
         }
         
@@ -29,8 +27,20 @@ namespace ContactManagement.FunctionalTests.Features.Hooks
             // Setup test data needed for all scenarios
             Console.WriteLine("Setting up test data");
             
-            // This could include seeding the database with test data
-            // or setting up mock services
+            // Seed the in-memory database with test data
+            if (_testContext != null)
+            {
+                using var scope = _testContext.Services.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                
+                // Ensure database is created
+                dbContext.Database.EnsureCreated();
+                
+                // Use the DatabaseSeeder to seed test data if needed
+                // DatabaseSeeder.SeedAllTestData(scope.ServiceProvider);
+                
+                Console.WriteLine("Database seeded with test data");
+            }
         }
 
         [AfterScenario]

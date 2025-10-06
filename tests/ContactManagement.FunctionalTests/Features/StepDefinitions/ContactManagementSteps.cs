@@ -54,9 +54,38 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         }
 
         [Given(@"an existing contact")]
-        public void GivenAnExistingContact()
+        public async Task GivenAnExistingContact()
         {
-            // Implementation will be added later
+            // Create a contact DTO with valid data
+            var contactDto = new CreateContactDto(
+                Name: "John Doe",
+                Email: "john.doe@example.com",
+                PhoneNumber: "+1234567890");
+
+            _scenarioContext.Set(contactDto, "ContactDto");
+
+            // Send the request to create a contact
+            var response = await TestContext.SendJsonRequest(
+                HttpMethod.Post,
+                "api/contacts",
+                contactDto);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var options = TestContext.JsonOptions;
+                var createdContact = JsonSerializer.Deserialize<ContactDto>(content, options);
+
+                if (createdContact != null)
+                {
+                    _scenarioContext.Set(createdContact, "ExistingContact");
+                    Console.WriteLine($"Created contact with ID: {createdContact.Id}");
+                }
+            }
+            else
+            {
+                Assert.Fail($"Failed to create contact. Status code: {response.StatusCode}");
+            }
         }
 
         [Given(@"a contact not assigned to any fund")]
@@ -130,7 +159,73 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         [When(@"I update the contact's email")]
         public async Task WhenIUpdateTheContactsEmail()
         {
-            // Implementation will be added later
+            var existingContact = _scenarioContext.Get<ContactDto>("ExistingContact");
+            
+            // Create an update DTO with new email
+            var updateContactDto = new UpdateContactDto(
+                Name: existingContact.Name,
+                Email: "updated.email@example.com",
+                PhoneNumber: existingContact.PhoneNumber);
+            
+            _scenarioContext.Set(updateContactDto, "UpdateContactDto");
+            
+            Console.WriteLine($"Updating contact with ID: {existingContact.Id}");
+            Console.WriteLine($"New email: {updateContactDto.Email}");
+            
+            // Send the request to update the contact
+            var response = await TestContext.SendJsonRequest(
+                HttpMethod.Put,
+                $"api/contacts/{existingContact.Id}",
+                updateContactDto);
+            
+            _scenarioContext.Set(response, "Response");
+            
+            // If successful, store the updated contact
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Contact update successful with status code: {(int)response.StatusCode}");
+                
+                var content = await response.Content.ReadAsStringAsync();
+                var options = TestContext.JsonOptions;
+                var updatedContact = JsonSerializer.Deserialize<ContactDto>(content, options);
+                
+                if (updatedContact != null)
+                {
+                    _scenarioContext.Set(updatedContact, "UpdatedContact");
+                    Console.WriteLine($"Updated contact with ID: {updatedContact.Id}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Contact update failed with status code: {(int)response.StatusCode}");
+            }
+        }
+        
+        [When(@"I update the contact's email with an invalid email")]
+        public async Task WhenIUpdateTheContactsEmailWithAnInvalidEmail()
+        {
+            var existingContact = _scenarioContext.Get<ContactDto>("ExistingContact");
+            
+            // Create an update DTO with invalid email
+            var updateContactDto = new UpdateContactDto(
+                Name: existingContact.Name,
+                Email: "invalid-email-format",
+                PhoneNumber: existingContact.PhoneNumber);
+            
+            _scenarioContext.Set(updateContactDto, "UpdateContactDto");
+            
+            Console.WriteLine($"Updating contact with ID: {existingContact.Id}");
+            Console.WriteLine($"Invalid email: {updateContactDto.Email}");
+            
+            // Send the request to update the contact
+            var response = await TestContext.SendJsonRequest(
+                HttpMethod.Put,
+                $"api/contacts/{existingContact.Id}",
+                updateContactDto);
+            
+            _scenarioContext.Set(response, "Response");
+            
+            Console.WriteLine($"Received response with status code: {(int)response.StatusCode}");
         }
 
         [When(@"I delete the contact")]
@@ -200,13 +295,45 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         [Then(@"the contact should be updated successfully")]
         public void ThenTheContactShouldBeUpdatedSuccessfully()
         {
-            // Implementation will be added later
+            var response = _scenarioContext.Get<HttpResponseMessage>("Response");
+            
+            // Assert that the response has a 200 OK status code
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Console.WriteLine("Verified response has 200 OK status code");
         }
 
         [Then(@"the response should reflect the changes")]
         public void ThenTheResponseShouldReflectTheChanges()
         {
-            // Implementation will be added later
+            // Get the updated contact and update DTO from the scenario context
+            var updatedContact = _scenarioContext.Get<ContactDto>("UpdatedContact");
+            var updateContactDto = _scenarioContext.Get<UpdateContactDto>("UpdateContactDto");
+            var originalContact = _scenarioContext.Get<ContactDto>("ExistingContact");
+            
+            // Assert that the updated contact is not null
+            Assert.NotNull(updatedContact);
+            Console.WriteLine("Verified updated contact is not null");
+            
+            // Assert that the updated contact contains the expected data
+            Assert.Equal(updateContactDto.Name, updatedContact.Name);
+            Console.WriteLine($"Verified name matches: {updatedContact.Name}");
+            
+            Assert.Equal(updateContactDto.Email, updatedContact.Email);
+            Console.WriteLine($"Verified email matches: {updatedContact.Email}");
+            
+            Assert.Equal(updateContactDto.PhoneNumber, updatedContact.PhoneNumber);
+            Console.WriteLine($"Verified phone number matches: {updatedContact.PhoneNumber}");
+            
+            // Verify ID and timestamps
+            Assert.Equal(originalContact.Id, updatedContact.Id);
+            Console.WriteLine($"Verified ID is unchanged: {updatedContact.Id}");
+            
+            Assert.Equal(originalContact.CreatedAt, updatedContact.CreatedAt);
+            Console.WriteLine($"Verified CreatedAt is unchanged: {updatedContact.CreatedAt}");
+            
+            Assert.NotNull(updatedContact.UpdatedAt);
+            Assert.True(updatedContact.UpdatedAt > originalContact.CreatedAt);
+            Console.WriteLine($"Verified UpdatedAt is after CreatedAt: {updatedContact.UpdatedAt}");
         }
 
         [Then(@"the contact should be removed successfully")]
