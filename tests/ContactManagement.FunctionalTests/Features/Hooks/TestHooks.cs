@@ -1,5 +1,6 @@
 using ContactManagement.FunctionalTests.Features.Support;
 using ContactManagement.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ContactManagement.FunctionalTests.Features.Hooks
@@ -17,7 +18,6 @@ namespace ContactManagement.FunctionalTests.Features.Hooks
             _testContext = new TestContext();
             _scenarioContext.Set(_testContext);
 
-            // No need to await since InitializeAsync is now static and returns a completed task
             Console.WriteLine("TestContext initialized for scenario");
         }
         
@@ -39,31 +39,74 @@ namespace ContactManagement.FunctionalTests.Features.Hooks
                 // Clean the database before each test to ensure a clean state
                 CleanDatabase(dbContext);
                 
-                // Use the DatabaseSeeder to seed test data if needed
-                // DatabaseSeeder.SeedAllTestData(scope.ServiceProvider);
+                // Seeding can be added here if needed
                 
                 Console.WriteLine("Database prepared for test");
             }
         }
         
-        private void CleanDatabase(ApplicationDbContext dbContext)
+        private static void CleanDatabase(ApplicationDbContext dbContext)
         {
-            // Remove all funds
-            if (dbContext.Funds.Any())
+            try
             {
-                dbContext.Funds.RemoveRange(dbContext.Funds);
+                // Clear the database using a more reliable approach for in-memory database
+                // Get entities in memory first, then remove them one by one with exception handling
+                
+                // Remove all fund contacts
+                var fundContacts = dbContext.FundContacts.ToList();
+                foreach (var fundContact in fundContacts)
+                {
+                    try
+                    {
+                        dbContext.FundContacts.Remove(fundContact);
+                        dbContext.SaveChanges();
+                    }
+                    catch (Exception ex) when (ex is DbUpdateConcurrencyException || ex is InvalidOperationException)
+                    {
+                        // Entity might have been removed already, continue with next
+                        Console.WriteLine($"Skipping already removed fund contact: {ex.Message}");
+                    }
+                }
+                
+                // Remove all funds
+                var funds = dbContext.Funds.ToList();
+                foreach (var fund in funds)
+                {
+                    try
+                    {
+                        dbContext.Funds.Remove(fund);
+                        dbContext.SaveChanges();
+                    }
+                    catch (Exception ex) when (ex is DbUpdateConcurrencyException || ex is InvalidOperationException)
+                    {
+                        // Entity might have been removed already, continue with next
+                        Console.WriteLine($"Skipping already removed fund: {ex.Message}");
+                    }
+                }
+                
+                // Remove all contacts
+                var contacts = dbContext.Contacts.ToList();
+                foreach (var contact in contacts)
+                {
+                    try
+                    {
+                        dbContext.Contacts.Remove(contact);
+                        dbContext.SaveChanges();
+                    }
+                    catch (Exception ex) when (ex is DbUpdateConcurrencyException || ex is InvalidOperationException)
+                    {
+                        // Entity might have been removed already, continue with next
+                        Console.WriteLine($"Skipping already removed contact: {ex.Message}");
+                    }
+                }
+                
+                Console.WriteLine("Database cleaned for test");
             }
-            
-            // Remove all contacts
-            if (dbContext.Contacts.Any())
+            catch (Exception ex)
             {
-                dbContext.Contacts.RemoveRange(dbContext.Contacts);
+                Console.WriteLine($"Error during database cleanup: {ex.Message}");
+                // Don't throw the exception as we want tests to continue even if cleanup has issues
             }
-            
-            // Save changes
-            dbContext.SaveChanges();
-            
-            Console.WriteLine("Database cleaned for test");
         }
 
         [AfterScenario]
