@@ -94,11 +94,9 @@ namespace ContactManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FundId");
+                    b.HasIndex("ContactId");
 
-                    b.HasIndex("ContactId", "FundId")
-                        .IsUnique()
-                        .HasFilter("\"IsDeleted\" = false");
+                    b.HasIndex("FundId");
 
                     b.ToTable("FundContacts");
                 });

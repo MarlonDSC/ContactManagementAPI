@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ContactManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251007080426_Fund_Contacts")]
+    [Migration("20251007103405_Fund_Contacts")]
     partial class Fund_Contacts
     {
         /// <inheritdoc />
@@ -97,11 +97,9 @@ namespace ContactManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FundId");
+                    b.HasIndex("ContactId");
 
-                    b.HasIndex("ContactId", "FundId")
-                        .IsUnique()
-                        .HasFilter("\"IsDeleted\" = false");
+                    b.HasIndex("FundId");
 
                     b.ToTable("FundContacts");
                 });
