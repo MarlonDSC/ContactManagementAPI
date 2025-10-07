@@ -5,7 +5,7 @@
 namespace ContactManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Fund_Contacts : Migration
+    public partial class IniialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

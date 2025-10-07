@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ContactManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251006172430_Add_Funds")]
-    partial class Add_Funds
+    [Migration("20251007113746_IniialCreate")]
+    partial class IniialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,6 +69,39 @@ namespace ContactManagement.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Funds");
+                });
+
+            modelBuilder.Entity("ContactManagement.Domain.Entities.FundContact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContactId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FundId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("FundId");
+
+                    b.ToTable("FundContacts");
                 });
 
             modelBuilder.Entity("ContactManagement.Domain.Entities.Contact", b =>
@@ -161,6 +194,25 @@ namespace ContactManagement.Infrastructure.Migrations
 
                     b.Navigation("Name")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ContactManagement.Domain.Entities.FundContact", b =>
+                {
+                    b.HasOne("ContactManagement.Domain.Entities.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ContactManagement.Domain.Entities.Fund", "Fund")
+                        .WithMany()
+                        .HasForeignKey("FundId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Contact");
+
+                    b.Navigation("Fund");
                 });
 #pragma warning restore 612, 618
         }
