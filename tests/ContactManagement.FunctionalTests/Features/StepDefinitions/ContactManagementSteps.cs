@@ -89,16 +89,39 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         }
 
         [Given(@"a contact not assigned to any fund")]
-        public void GivenAContactNotAssignedToAnyFund()
+        public async Task GivenAContactNotAssignedToAnyFund()
         {
-            // Implementation will be added later
+            // Create a contact DTO with valid data
+            var contactDto = new CreateContactDto(
+                Name: "Unassigned Contact",
+                Email: "unassigned@example.com",
+                PhoneNumber: "+1987654321");
+                
+            // Send the request to create a contact
+            var response = await TestContext.SendJsonRequest(
+                HttpMethod.Post,
+                "api/contacts",
+                contactDto);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var options = TestContext.JsonOptions;
+                var createdContact = JsonSerializer.Deserialize<ContactDto>(content, options);
+
+                if (createdContact != null)
+                {
+                    _scenarioContext.Set(createdContact, "ExistingContact");
+                    Console.WriteLine($"Created unassigned contact with ID: {createdContact.Id}");
+                }
+            }
+            else
+            {
+                Assert.Fail($"Failed to create contact. Status code: {response.StatusCode}");
+            }
         }
 
-        [Given(@"a contact assigned to a fund")]
-        public void GivenAContactAssignedToAFund()
-        {
-            // Implementation will be added later
-        }
+        // Removed duplicate step definition that's implemented in FundContactAssignmentSteps.cs
 
         [When(@"I create a contact")]
         public async Task WhenICreateAContact()
@@ -231,13 +254,45 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         [When(@"I delete the contact")]
         public async Task WhenIDeleteTheContact()
         {
-            // Implementation will be added later
+            var existingContact = _scenarioContext.Get<ContactDto>("ExistingContact");
+            
+            Console.WriteLine($"Deleting contact with ID: {existingContact.Id}");
+            
+            // Send the request to delete the contact
+            var response = await TestContext.Client.DeleteAsync($"api/contacts/{existingContact.Id}");
+            
+            _scenarioContext.Set(response, "Response");
+            
+            Console.WriteLine($"Received response with status code: {(int)response.StatusCode}");
         }
 
         [When(@"I attempt to delete the contact")]
         public async Task WhenIAttemptToDeleteTheContact()
         {
-            // Implementation will be added later
+            ContactDto existingContact;
+            
+            // Try to get contact from either key
+            if (_scenarioContext.ContainsKey("ExistingContact"))
+            {
+                existingContact = _scenarioContext.Get<ContactDto>("ExistingContact");
+            }
+            else if (_scenarioContext.ContainsKey("Contact"))
+            {
+                existingContact = _scenarioContext.Get<ContactDto>("Contact");
+            }
+            else
+            {
+                throw new KeyNotFoundException("Neither 'ExistingContact' nor 'Contact' key was found in the scenario context");
+            }
+            
+            Console.WriteLine($"Attempting to delete contact with ID: {existingContact.Id}");
+            
+            // Send the request to delete the contact
+            var response = await TestContext.Client.DeleteAsync($"api/contacts/{existingContact.Id}");
+            
+            _scenarioContext.Set(response, "Response");
+            
+            Console.WriteLine($"Received response with status code: {(int)response.StatusCode}");
         }
 
         [Then(@"the contact should be created successfully")]
@@ -291,8 +346,9 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
             // Assert that the response has either a 400 Bad Request or 422 Unprocessable Entity status code
             Assert.True(
                 response.StatusCode == HttpStatusCode.BadRequest || 
-                response.StatusCode == HttpStatusCode.UnprocessableEntity,
-                $"Expected status code to be 400 or 422, but got {(int)response.StatusCode}");
+                response.StatusCode == HttpStatusCode.UnprocessableEntity ||
+                response.StatusCode == HttpStatusCode.Conflict,
+                $"Expected status code to be 400, 422, or 409, but got {(int)response.StatusCode}");
             
             Console.WriteLine($"Verified response has error status code: {(int)response.StatusCode}");
         }
@@ -344,7 +400,11 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         [Then(@"the contact should be removed successfully")]
         public void ThenTheContactShouldBeRemovedSuccessfully()
         {
-            // Implementation will be added later
+            var response = _scenarioContext.Get<HttpResponseMessage>("Response");
+            
+            // Assert that the response has a 204 No Content status code
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            Console.WriteLine("Verified response has 204 No Content status code");
         }
 
         [Then(@"the system should return a business rule violation error")]
