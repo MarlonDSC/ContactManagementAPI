@@ -29,7 +29,6 @@ namespace ContactManagement.Application.Features.Funds.Commands.CreateMultipleFu
 
             foreach (var name in command.Names)
             {
-                // Check if a fund with the same name already exists
                 var existsResult = await _fundRepository.ExistsByNameAsync(name, cancellationToken);
                 if (existsResult.IsFailure)
                 {
@@ -42,7 +41,6 @@ namespace ContactManagement.Application.Features.Funds.Commands.CreateMultipleFu
                     continue;
                 }
 
-                // Create the fund
                 var fundResult = Fund.Create(name);
                 if (fundResult.IsFailure)
                 {
@@ -50,7 +48,6 @@ namespace ContactManagement.Application.Features.Funds.Commands.CreateMultipleFu
                     continue;
                 }
 
-                // Add to repository
                 var addResult = await _fundRepository.AddAsync(fundResult.Value!, cancellationToken);
                 if (addResult.IsFailure)
                 {
@@ -60,7 +57,6 @@ namespace ContactManagement.Application.Features.Funds.Commands.CreateMultipleFu
 
                 var fund = addResult.Value!;
 
-                // Map to DTO
                 var fundDto = new FundDto(
                     fund.Id,
                     fund.Name.Value,

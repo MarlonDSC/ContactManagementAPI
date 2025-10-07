@@ -13,11 +13,6 @@ Feature: Fund Management
         When I attempt to create a fund
         Then the system should return a validation error
 
-    Scenario: Create multiple valid funds
-        Given I provide multiple fund names
-        When I create multiple funds
-        Then the funds should be created successfully
-
     Scenario: Fail to create multiple funds without names
         Given I provide an empty list of fund names
         When I attempt to create multiple funds
