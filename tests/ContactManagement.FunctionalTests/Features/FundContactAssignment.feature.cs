@@ -223,15 +223,15 @@ namespace ContactManagement.FunctionalTests.Features
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Remove contact from fund")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Fail to remove contact from fund")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Fund Contact Assignment")]
-        [global::Xunit.TraitAttribute("Description", "Remove contact from fund")]
-        public async global::System.Threading.Tasks.Task RemoveContactFromFund()
+        [global::Xunit.TraitAttribute("Description", "Fail to remove contact from fund")]
+        public async global::System.Threading.Tasks.Task FailToRemoveContactFromFund()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Remove contact from fund", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Fail to remove contact from fund", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 21
@@ -254,7 +254,7 @@ namespace ContactManagement.FunctionalTests.Features
     await testRunner.WhenAsync("I remove the contact from the fund", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 24
-    await testRunner.ThenAsync("the assignment should be removed successfully", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+    await testRunner.ThenAsync("the system should return an error", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

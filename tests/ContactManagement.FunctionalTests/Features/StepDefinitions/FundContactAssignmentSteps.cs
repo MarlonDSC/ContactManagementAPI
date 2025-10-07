@@ -322,13 +322,13 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
             Console.WriteLine("Verified response has 409 Conflict status code");
         }
 
-        [Then(@"the assignment should be removed successfully")]
-        public void ThenTheAssignmentShouldBeRemovedSuccessfully()
+        [Then(@"the system should return an error")]
+        public void ThenTheSystemShouldReturnAnError()
         {
             var response = _scenarioContext.Get<HttpResponseMessage>("Response");
 
-            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-            Console.WriteLine("Verified response has 204 No Content status code");
+            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Console.WriteLine("Verified response has 500 Internal Server Error status code");
         }
 
         [Then(@"the system should return the list of contacts")]

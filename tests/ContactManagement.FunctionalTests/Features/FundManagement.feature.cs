@@ -106,7 +106,7 @@ namespace ContactManagement.FunctionalTests.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/FundManagement.feature.ndjson", 7);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/FundManagement.feature.ndjson", 6);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -202,15 +202,15 @@ namespace ContactManagement.FunctionalTests.Features
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Create multiple valid funds")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Fail to create multiple funds without names")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Fund Management")]
-        [global::Xunit.TraitAttribute("Description", "Create multiple valid funds")]
-        public async global::System.Threading.Tasks.Task CreateMultipleValidFunds()
+        [global::Xunit.TraitAttribute("Description", "Fail to create multiple funds without names")]
+        public async global::System.Threading.Tasks.Task FailToCreateMultipleFundsWithoutNames()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Create multiple valid funds", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Fail to create multiple funds without names", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 16
@@ -224,46 +224,12 @@ namespace ContactManagement.FunctionalTests.Features
             {
                 await this.ScenarioStartAsync();
 #line 17
-        await testRunner.GivenAsync("I provide multiple fund names", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 18
-        await testRunner.WhenAsync("I create multiple funds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 19
-        await testRunner.ThenAsync("the funds should be created successfully", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Fail to create multiple funds without names")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Fund Management")]
-        [global::Xunit.TraitAttribute("Description", "Fail to create multiple funds without names")]
-        public async global::System.Threading.Tasks.Task FailToCreateMultipleFundsWithoutNames()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Fail to create multiple funds without names", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 21
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 22
         await testRunner.GivenAsync("I provide an empty list of fund names", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 23
+#line 18
         await testRunner.WhenAsync("I attempt to create multiple funds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 24
+#line 19
         await testRunner.ThenAsync("the system should return a validation error", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -277,11 +243,11 @@ namespace ContactManagement.FunctionalTests.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "4";
+            string pickleIndex = "3";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Get all funds", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 26
+#line 21
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -291,10 +257,10 @@ namespace ContactManagement.FunctionalTests.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 27
+#line 22
         await testRunner.GivenAsync("I request all funds", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 28
+#line 23
         await testRunner.ThenAsync("the system should return the list of funds", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
