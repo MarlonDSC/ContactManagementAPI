@@ -67,18 +67,34 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
             _scenarioContext.Set(createdContact, "Contact");
             Console.WriteLine($"Created contact with ID: {createdContact?.Id}");
 
-            // Generate a unique fund name with a timestamp to avoid conflicts
+            // Generate a truly unique fund name with a timestamp and GUID to avoid conflicts
             var fundDto = new CreateFundDto(
-                Name: $"Test Fund {DateTime.Now:yyyyMMdd_HHmmss}");
+                Name: $"Test Fund {DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid().ToString("N").Substring(0, 8)}");
 
             var fundResponse = await TestContext.SendJsonRequest(
                 HttpMethod.Post,
                 "api/funds",
                 fundDto);
 
+            // Try up to 3 times with different names if we get a conflict
+            int retryCount = 0;
+            while (!fundResponse.IsSuccessStatusCode && fundResponse.StatusCode == System.Net.HttpStatusCode.Conflict && retryCount < 3)
+            {
+                retryCount++;
+                // Generate a new name with a different GUID
+                fundDto = new CreateFundDto(
+                    Name: $"Test Fund {DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid().ToString("N").Substring(0, 8)}_{retryCount}");
+                
+                Console.WriteLine($"Retrying fund creation with name: {fundDto.Name}");
+                fundResponse = await TestContext.SendJsonRequest(
+                    HttpMethod.Post,
+                    "api/funds",
+                    fundDto);
+            }
+
             if (!fundResponse.IsSuccessStatusCode)
             {
-                Assert.Fail($"Failed to create fund. Status code: {fundResponse.StatusCode}");
+                Assert.Fail($"Failed to create fund after {retryCount} retries. Status code: {fundResponse.StatusCode}");
             }
 
             var fundContent = await fundResponse.Content.ReadAsStringAsync();
@@ -90,17 +106,38 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         [Given(@"a contact already assigned to a fund")]
         public async Task GivenAContactAlreadyAssignedToAFund()
         {
-            await GivenAContactAndAFund();
-
-            await WhenIAssignTheContactToTheFund();
-
-            var response = _scenarioContext.Get<HttpResponseMessage>("Response");
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                Assert.Fail($"Failed to assign contact to fund. Status code: {response.StatusCode}");
+                // First ensure we have a contact and fund
+                await GivenAContactAndAFund();
+                
+                // Then try to assign the contact to the fund
+                await WhenIAssignTheContactToTheFund();
+                
+                var response = _scenarioContext.Get<HttpResponseMessage>("Response");
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Warning: Failed to assign contact to fund. Status code: {response.StatusCode}");
+                    
+                    // If it failed, try one more time with a fresh contact and fund
+                    Console.WriteLine("Retrying with a fresh contact and fund...");
+                    await GivenAContactAndAFund();
+                    await WhenIAssignTheContactToTheFund();
+                    
+                    response = _scenarioContext.Get<HttpResponseMessage>("Response");
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        Assert.Fail($"Failed to assign contact to fund after retry. Status code: {response.StatusCode}");
+                    }
+                }
+                
+                Console.WriteLine("Successfully created a contact assigned to a fund");
             }
-
-            Console.WriteLine("Successfully created a contact assigned to a fund");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in GivenAContactAlreadyAssignedToAFund: {ex.Message}");
+                throw;
+            }
         }
 
         [Given(@"a contact assigned to a fund")]

@@ -49,58 +49,52 @@ namespace ContactManagement.FunctionalTests.Features.Hooks
         {
             try
             {
-                // Clear the database using a more reliable approach for in-memory database
-                // Get entities in memory first, then remove them one by one with exception handling
+                // For in-memory database, the most reliable approach is to recreate the database
+                dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
                 
-                // Remove all fund contacts
-                var fundContacts = dbContext.FundContacts.ToList();
-                foreach (var fundContact in fundContacts)
+                Console.WriteLine("Database recreated for clean test environment");
+                
+                // Double-check that all tables are empty
+                var fundContactCount = dbContext.FundContacts.Count();
+                var fundCount = dbContext.Funds.Count();
+                var contactCount = dbContext.Contacts.Count();
+                
+                if (fundContactCount > 0 || fundCount > 0 || contactCount > 0)
                 {
+                    Console.WriteLine($"Warning: After cleanup, database still contains: {fundContactCount} fund contacts, {fundCount} funds, {contactCount} contacts");
+                    
+                    // As a fallback, try explicit removal
                     try
                     {
-                        dbContext.FundContacts.Remove(fundContact);
+                        // Remove all fund contacts first (due to foreign keys)
+                        foreach (var entity in dbContext.FundContacts.ToList())
+                        {
+                            dbContext.FundContacts.Remove(entity);
+                        }
                         dbContext.SaveChanges();
+                        
+                        // Then remove all funds
+                        foreach (var entity in dbContext.Funds.ToList())
+                        {
+                            dbContext.Funds.Remove(entity);
+                        }
+                        dbContext.SaveChanges();
+                        
+                        // Finally remove all contacts
+                        foreach (var entity in dbContext.Contacts.ToList())
+                        {
+                            dbContext.Contacts.Remove(entity);
+                        }
+                        dbContext.SaveChanges();
+                        
+                        Console.WriteLine("Explicit entity removal completed");
                     }
-                    catch (Exception ex) when (ex is DbUpdateConcurrencyException || ex is InvalidOperationException)
+                    catch (Exception ex)
                     {
-                        // Entity might have been removed already, continue with next
-                        Console.WriteLine($"Skipping already removed fund contact: {ex.Message}");
+                        Console.WriteLine($"Error during explicit entity removal: {ex.Message}");
                     }
                 }
-                
-                // Remove all funds
-                var funds = dbContext.Funds.ToList();
-                foreach (var fund in funds)
-                {
-                    try
-                    {
-                        dbContext.Funds.Remove(fund);
-                        dbContext.SaveChanges();
-                    }
-                    catch (Exception ex) when (ex is DbUpdateConcurrencyException || ex is InvalidOperationException)
-                    {
-                        // Entity might have been removed already, continue with next
-                        Console.WriteLine($"Skipping already removed fund: {ex.Message}");
-                    }
-                }
-                
-                // Remove all contacts
-                var contacts = dbContext.Contacts.ToList();
-                foreach (var contact in contacts)
-                {
-                    try
-                    {
-                        dbContext.Contacts.Remove(contact);
-                        dbContext.SaveChanges();
-                    }
-                    catch (Exception ex) when (ex is DbUpdateConcurrencyException || ex is InvalidOperationException)
-                    {
-                        // Entity might have been removed already, continue with next
-                        Console.WriteLine($"Skipping already removed contact: {ex.Message}");
-                    }
-                }
-                
-                Console.WriteLine("Database cleaned for test");
             }
             catch (Exception ex)
             {

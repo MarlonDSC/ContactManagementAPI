@@ -17,10 +17,29 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
         }
 
         [Given(@"the system has pre-seeded funds")]
-        public void GivenTheSystemHasPreSeededFunds()
+        public async Task GivenTheSystemHasPreSeededFunds()
         {
-            // Implementation will be added later
-            // This would typically verify or setup test data for funds
+            // Create a few pre-seeded funds
+            var funds = Enumerable.Range(1, 3)
+                .Select(i => $"Test Fund {i}");
+            
+            foreach (var fundName in funds)
+            {
+                var fundDto = new CreateFundDto(Name: fundName);
+                
+                var response = await TestContext.SendJsonRequest(
+                    HttpMethod.Post,
+                    "api/funds",
+                    fundDto);
+                
+                // Ignore conflicts as they might already exist
+                if (!response.IsSuccessStatusCode && response.StatusCode != System.Net.HttpStatusCode.Conflict)
+                {
+                    Console.WriteLine($"Warning: Failed to create fund {fundName}. Status code: {response.StatusCode}");
+                }
+            }
+            
+            Console.WriteLine("Pre-seeded funds created or already exist");
         }
 
         [Given(@"I provide a contact name")]
