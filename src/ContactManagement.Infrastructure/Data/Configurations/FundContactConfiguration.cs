@@ -40,9 +40,9 @@ namespace ContactManagement.Infrastructure.Data.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Create a unique index to prevent duplicate assignments
-            // builder.HasIndex(fc => new { fc.ContactId, fc.FundId })
-            //     .IsUnique()
-            //     .HasFilter("[IsDeleted] = 0");
+            builder.HasIndex(fc => new { fc.ContactId, fc.FundId })
+                .IsUnique()
+                .HasFilter("[IsDeleted] = 0");
         }
     }
 }
