@@ -38,11 +38,6 @@ namespace ContactManagement.Infrastructure.Data.Configurations
                 .WithMany()
                 .HasForeignKey(fc => fc.FundId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Create a unique index to prevent duplicate assignments
-            builder.HasIndex(fc => new { fc.ContactId, fc.FundId })
-                .IsUnique()
-                .HasFilter("[IsDeleted] = 0");
         }
     }
 }

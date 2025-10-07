@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ContactManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251007103405_Fund_Contacts")]
+    [Migration("20251007112900_Fund_Contacts")]
     partial class Fund_Contacts
     {
         /// <inheritdoc />

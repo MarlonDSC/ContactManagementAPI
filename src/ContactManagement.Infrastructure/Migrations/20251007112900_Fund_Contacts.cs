@@ -5,10 +5,23 @@
 namespace ContactManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Fund_Contacts_Fix_FK : Migration
+    public partial class Fund_Contacts : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropIndex(
+                name: "IX_FundContacts_ContactId_FundId",
+                table: "FundContacts");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FundContacts_ContactId",
+                table: "FundContacts",
+                column: "ContactId");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
                 name: "IX_FundContacts_ContactId",
@@ -20,19 +33,6 @@ namespace ContactManagement.Infrastructure.Migrations
                 columns: new[] { "ContactId", "FundId" },
                 unique: true,
                 filter: "[IsDeleted] = 0");
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropIndex(
-                name: "IX_FundContacts_ContactId_FundId",
-                table: "FundContacts");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FundContacts_ContactId",
-                table: "FundContacts",
-                column: "ContactId");
         }
     }
 }
