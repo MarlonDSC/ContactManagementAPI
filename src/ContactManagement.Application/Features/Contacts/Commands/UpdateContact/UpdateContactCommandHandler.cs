@@ -6,16 +6,10 @@ using Microsoft.Extensions.Logging;
 
 namespace ContactManagement.Application.Features.Contacts.Commands.UpdateContact
 {
-    public class UpdateContactCommandHandler : IRequestHandler<UpdateContactCommand, Result<ContactDto>>
+    public class UpdateContactCommandHandler(IContactRepository contactRepository, ILogger<UpdateContactCommandHandler> logger) : IRequestHandler<UpdateContactCommand, Result<ContactDto>>
     {
-        private readonly IContactRepository _contactRepository;
-        private readonly ILogger<UpdateContactCommandHandler> _logger;
-
-        public UpdateContactCommandHandler(IContactRepository contactRepository, ILogger<UpdateContactCommandHandler> logger)
-        {
-            _contactRepository = contactRepository;
-            _logger = logger;
-        }
+        private readonly IContactRepository _contactRepository = contactRepository;
+        private readonly ILogger<UpdateContactCommandHandler> _logger = logger;
 
         public async Task<Result<ContactDto>> Handle(UpdateContactCommand request, CancellationToken cancellationToken)
         {

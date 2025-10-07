@@ -1,6 +1,7 @@
 using ContactManagement.API.Extensions;
 using ContactManagement.Application.DTOs;
 using ContactManagement.Application.Features.Contacts.Commands.CreateContact;
+using ContactManagement.Application.Features.Contacts.Commands.DeleteContact;
 using ContactManagement.Application.Features.Contacts.Commands.UpdateContact;
 using ContactManagement.Domain.Errors;
 using ContactManagement.Shared.Common;
@@ -61,6 +62,24 @@ namespace ContactManagement.API.Controllers
             }
             
             return Ok(result.Value);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteContact(Guid id)
+        {
+            var command = new DeleteContactCommand(id);
+            var result = await _mediator.Send(command);
+            
+            if (result.IsFailure)
+            {
+                return result.ToActionResult(this);
+            }
+            
+            return NoContent();
         }
     }
 }

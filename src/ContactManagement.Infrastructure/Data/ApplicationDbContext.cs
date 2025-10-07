@@ -7,6 +7,7 @@ namespace ContactManagement.Infrastructure.Data
     {
         public DbSet<Contact> Contacts { get; set; } = null!;
         public DbSet<Fund> Funds { get; set; } = null!;
+        public DbSet<FundContact> FundContacts { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
