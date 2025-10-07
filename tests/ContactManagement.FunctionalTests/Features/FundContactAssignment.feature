@@ -18,10 +18,10 @@ Feature: Fund Contact Assignment
     When I attempt to assign the same contact again
     Then the system should return a duplicate assignment error
 
-  Scenario: Fail to remove contact from fund
+  Scenario: Remove contact from fund
     Given a contact assigned to a fund
     When I remove the contact from the fund
-    Then the system should return an error
+    Then the assignment should be removed successfully
 
   Scenario: List contacts for a fund
     Given a fund with assigned contacts

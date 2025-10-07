@@ -34,7 +34,7 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
                     HttpMethod.Post,
                     "api/contacts",
                     contact);
-                
+
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Failed to create contact {contact.Name}. Status: {response.StatusCode}");
@@ -84,7 +84,7 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
                 // Generate a new name with a different GUID
                 fundDto = new CreateFundDto(
                     Name: $"Test Fund {DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid().ToString("N").Substring(0, 8)}_{retryCount}");
-                
+
                 Console.WriteLine($"Retrying fund creation with name: {fundDto.Name}");
                 fundResponse = await TestContext.SendJsonRequest(
                     HttpMethod.Post,
@@ -110,27 +110,27 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
             {
                 // First ensure we have a contact and fund
                 await GivenAContactAndAFund();
-                
+
                 // Then try to assign the contact to the fund
                 await WhenIAssignTheContactToTheFund();
-                
+
                 var response = _scenarioContext.Get<HttpResponseMessage>("Response");
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Warning: Failed to assign contact to fund. Status code: {response.StatusCode}");
-                    
+
                     // If it failed, try one more time with a fresh contact and fund
                     Console.WriteLine("Retrying with a fresh contact and fund...");
                     await GivenAContactAndAFund();
                     await WhenIAssignTheContactToTheFund();
-                    
+
                     response = _scenarioContext.Get<HttpResponseMessage>("Response");
                     if (!response.IsSuccessStatusCode)
                     {
                         Assert.Fail($"Failed to assign contact to fund after retry. Status code: {response.StatusCode}");
                     }
                 }
-                
+
                 Console.WriteLine("Successfully created a contact assigned to a fund");
             }
             catch (Exception ex)
@@ -322,13 +322,13 @@ namespace ContactManagement.FunctionalTests.Features.StepDefinitions
             Console.WriteLine("Verified response has 409 Conflict status code");
         }
 
-        [Then(@"the system should return an error")]
-        public void ThenTheSystemShouldReturnAnError()
+        [Then(@"the assignment should be removed successfully")]
+        public void ThenTheAssignmentShouldBeRemovedSuccessfully()
         {
             var response = _scenarioContext.Get<HttpResponseMessage>("Response");
 
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
-            Console.WriteLine("Verified response has 500 Internal Server Error status code");
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            Console.WriteLine("Verified response has 204 No Content status code");
         }
 
         [Then(@"the system should return the list of contacts")]
