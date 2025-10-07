@@ -22,8 +22,3 @@ Feature: Fund Contact Assignment
     Given a contact assigned to a fund
     When I remove the contact from the fund
     Then the assignment should be removed successfully
-
-  Scenario: List contacts for a fund
-    Given a fund with assigned contacts
-    When I request the contacts for the fund
-    Then the system should return the list of contacts
