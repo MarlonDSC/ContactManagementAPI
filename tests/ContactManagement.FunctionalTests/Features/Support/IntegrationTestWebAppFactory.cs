@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Testcontainers.MsSql;
 
 namespace ContactManagement.FunctionalTests.Features.Support
 {
@@ -35,7 +34,7 @@ namespace ContactManagement.FunctionalTests.Features.Support
 
                 services.AddDbContext<ApplicationDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("TestDb");
+                    options.UseSqlServer(TestDatabaseContainer.ConnectionString);
                 });
 
                 services.AddLogging(loggingBuilder =>
